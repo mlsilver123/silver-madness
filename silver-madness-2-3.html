@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Silver Madness 2">
+<meta name="theme-color" content="#070c18">
+<title>Silver Madness 2 — World Cup Warrior</title>
+<style>
+:root{
+  --bg:#070c18; --card:#111827; --card2:#1a2236; --border:#243052;
+  --text:#e2e8f0; --muted:#8896b3; --orange:#f97316; --blue:#3b82f6;
+  --green:#22c55e; --red:#ef4444; --purple:#a855f7; --pink:#ec4899;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
+}
+*{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+body{background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; min-height:100vh; -webkit-text-size-adjust:100%;}
+button{font-family:inherit; cursor:pointer;}
+.hidden{display:none !important;}
+.btn{padding:.6rem 1.1rem; border-radius:.55rem; border:none; font-size:.9rem; font-weight:700; transition:filter .15s, background .15s;}
+.btn:active{transform:scale(.98);}
+.btn-primary{background:var(--orange); color:#fff;} .btn-primary:hover{filter:brightness(1.08);}
+.btn-blue{background:var(--blue); color:#fff;}
+.btn-green{background:var(--green); color:#fff;}
+.btn-ghost{background:var(--card2); color:var(--text); border:1px solid var(--border);}
+.btn-ghost:hover{border-color:var(--muted);}
+.btn-sm{padding:.35rem .7rem; font-size:.78rem; border-radius:.45rem;}
+
+/* PASSWORD */
+.pw-wrap{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:1.5rem;}
+.pw-card{background:var(--card); border:1px solid var(--border); border-radius:1rem; padding:2.5rem 2rem; width:100%; max-width:400px; text-align:center;}
+.pw-card .logo{font-size:1.4rem; font-weight:800; color:var(--orange); margin-bottom:.4rem;}
+.pw-card .tag{color:var(--muted); font-size:.8rem; margin-bottom:1.5rem; letter-spacing:.02em;}
+.pw-card input{width:100%; padding:.85rem 1rem; background:var(--card2); border:1px solid var(--border); border-radius:.6rem; color:var(--text); font-size:16px; text-align:center; letter-spacing:.15em; margin-bottom:.75rem; outline:none;}
+.pw-card input:focus{border-color:var(--orange);}
+.pw-err{color:var(--red); font-size:.8rem; height:1rem; margin-top:.2rem;}
+
+/* HEADER / NAV */
+header{background:var(--card); border-bottom:1px solid var(--border); padding:calc(.7rem + var(--safe-t)) 1rem .7rem; position:sticky; top:0; z-index:100;}
+.head-row{display:flex; align-items:center; gap:1rem; flex-wrap:wrap;}
+.logo{font-size:1.05rem; font-weight:800; color:var(--orange); white-space:nowrap;}
+.logo small{color:var(--muted); font-weight:600; font-size:.7rem; display:block; letter-spacing:.03em;}
+.top-nav{display:flex; gap:.25rem; margin-left:auto; flex-wrap:wrap;}
+.nav-btn{padding:.5rem .9rem; border-radius:.5rem; border:none; background:transparent; color:var(--muted); font-size:.85rem; font-weight:600;}
+.nav-btn.active{background:var(--card2); color:var(--text);}
+.nav-btn:hover{color:var(--text);}
+
+main{max-width:1100px; margin:0 auto; padding:1rem 1rem calc(1rem + var(--safe-b));}
+@media(max-width:760px){ main{padding-bottom:calc(74px + var(--safe-b));} }
+
+/* BOTTOM NAV (mobile) */
+.bottom-nav{display:none;}
+@media(max-width:760px){
+  .top-nav{display:none;}
+  .bottom-nav{display:flex; position:fixed; bottom:0; left:0; right:0; z-index:200;
+    background:#0a1120; border-top:1px solid var(--border); padding:.5rem .25rem var(--safe-b);}
+  .bn-item{flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; background:none; border:none; color:var(--muted); padding:.3rem 0; min-height:48px;}
+  .bn-item .ti{font-size:1.35rem;}
+  .bn-item span{font-size:.6rem; font-weight:600;}
+  .bn-item.active{color:var(--orange);}
+}
+
+/* GENERIC */
+h2.page-title{font-size:1.2rem; font-weight:800; margin-bottom:.85rem;}
+.card{background:var(--card); border:1px solid var(--border); border-radius:.75rem; padding:1rem 1.1rem;}
+.muted{color:var(--muted);}
+.empty-state{text-align:center; color:var(--muted); padding:3rem 1rem;}
+.empty-state .ti{font-size:2.5rem; display:block; margin-bottom:.6rem; opacity:.5;}
+.pill{display:inline-flex; align-items:center; border-radius:999px; padding:.12rem .5rem; font-size:.62rem; font-weight:700; background:var(--card2); color:var(--muted);}
+.pill.elig{background:rgba(34,197,94,.15); color:var(--green);}
+.pos-chip{display:inline-flex; background:var(--card2); color:var(--muted); font-size:.6rem; font-weight:700; padding:.12rem .4rem; border-radius:.25rem;}
+
+/* STATUS BAR */
+.status-bar{background:var(--card); border:1px solid var(--border); border-radius:.75rem; padding:1rem 1.1rem; margin-bottom:1rem;}
+.status-badges{display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; margin-bottom:.55rem;}
+.status-badge{background:var(--orange); color:#fff; border-radius:999px; padding:.28rem .8rem; font-size:.74rem; font-weight:700;}
+.status-badge.blue{background:var(--blue);} .status-badge.muted{background:var(--card2); color:var(--muted);}
+.req-note{border-radius:.5rem; padding:.5rem .8rem; font-size:.78rem; margin-top:.5rem;}
+.req-ok{background:rgba(34,197,94,.1); border:1px solid var(--green); color:var(--green);}
+.req-warn{background:rgba(249,115,22,.1); border:1px solid var(--orange); color:var(--orange);}
+
+/* DRAFT BOARD (desktop oriented) */
+.board-scroll{overflow-x:auto; border-radius:.75rem; -webkit-overflow-scrolling:touch;}
+.draft-grid{display:grid; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:.75rem; overflow:hidden; min-width:780px;}
+.dg-head{background:var(--card2); padding:.55rem .35rem; font-size:.66rem; font-weight:700; text-align:center; color:var(--muted); text-transform:uppercase; letter-spacing:.03em;}
+.dg-head.current{background:rgba(249,115,22,.18); color:var(--orange);}
+.dg-rl{background:var(--card2); display:flex; align-items:center; justify-content:center; font-size:.66rem; font-weight:700; color:var(--muted);}
+.dg-cell{background:var(--card); padding:.35rem .4rem; min-height:52px; display:flex; flex-direction:column; justify-content:center; gap:.1rem;}
+.dg-cell.current-slot{background:rgba(249,115,22,.08); box-shadow:inset 0 0 0 2px var(--orange);}
+.dg-name{font-size:.72rem; font-weight:700; line-height:1.1;}
+.dg-team{font-size:.6rem; color:var(--muted);}
+.dg-elig{width:6px; height:6px; border-radius:50%; background:var(--green); display:inline-block; margin-left:3px;}
+
+/* PICKER */
+.picker{margin-top:1rem;}
+.picker-controls{display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.7rem;}
+.picker input[type=text]{flex:1; min-width:160px; padding:.6rem .8rem; background:var(--card2); border:1px solid var(--border); border-radius:.55rem; color:var(--text); font-size:16px; outline:none;}
+.picker input[type=text]:focus{border-color:var(--orange);}
+.filter-chip{padding:.4rem .75rem; border-radius:.5rem; border:1px solid var(--border); background:transparent; color:var(--muted); font-size:.76rem; font-weight:700;}
+.filter-chip.active{background:var(--orange); color:#fff; border-color:var(--orange);}
+.filter-chip.elig.active{background:var(--green); border-color:var(--green);}
+.player-list{display:flex; flex-direction:column; gap:.4rem; max-height:460px; overflow-y:auto;}
+.pl-row{display:flex; align-items:center; gap:.55rem; background:var(--card); border:1px solid var(--border); border-radius:.55rem; padding:.55rem .7rem;}
+.pl-row.elig{border-color:rgba(34,197,94,.4);}
+.pl-name{flex:1; font-size:.86rem; font-weight:600;}
+.pl-draft{background:var(--orange); color:#fff; border:none; padding:.4rem .8rem; border-radius:.45rem; font-size:.74rem; font-weight:700; min-height:36px;}
+
+/* STANDINGS */
+.stand-row{display:flex; align-items:center; gap:.5rem; padding:.6rem .25rem .7rem; position:relative;}
+.stand-row + .stand-row{border-top:1px solid var(--border);}
+.stand-rank{width:18px; font-weight:800; color:var(--muted); text-align:center; font-size:.8rem; flex-shrink:0;}
+.stand-name{flex:1; min-width:0; font-size:.9rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.stand-remain{display:inline-flex; align-items:center; gap:4px; font-size:.7rem; font-weight:700; color:var(--green); background:rgba(34,197,94,.12); padding:.16rem .5rem; border-radius:999px; flex-shrink:0;}
+.stand-remain.none{color:var(--muted); background:var(--card2);}
+.stand-remain .dot{width:6px; height:6px; border-radius:50%; background:currentColor; flex-shrink:0;}
+.stand-pts{width:36px; text-align:right; font-weight:800; font-size:.96rem; flex-shrink:0;}
+.stand-track{position:absolute; left:.25rem; right:.25rem; bottom:0; height:3px; background:var(--card2); border-radius:2px; overflow:hidden;}
+.stand-track .fill{height:100%; border-radius:2px;}
+.stand-legend{display:flex; justify-content:flex-end; gap:.4rem; font-size:.66rem; color:var(--muted); margin-bottom:.4rem;}
+
+/* SQUAD ACCORDION */
+.squad-tabs{display:flex; gap:.35rem; overflow-x:auto; padding-bottom:.5rem; margin-bottom:.6rem; -webkit-overflow-scrolling:touch;}
+.squad-tab{white-space:nowrap; padding:.45rem .8rem; border-radius:.5rem; border:1px solid var(--border); background:transparent; color:var(--muted); font-size:.78rem; font-weight:700;}
+.squad-tab.active{background:var(--card2); color:var(--text); border-color:var(--muted);}
+.squad-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:.6rem;}
+.squad-total{font-size:.8rem; color:var(--muted);} .squad-total b{color:var(--text); font-size:1rem;}
+.expand-toggle{background:none; border:none; color:var(--blue); font-size:.76rem; font-weight:700;}
+.pcard{background:var(--card); border:1px solid var(--border); border-radius:.6rem; margin-bottom:.5rem; overflow:hidden;}
+.pcard.out{opacity:.58;}
+.pcard-head{display:flex; align-items:center; gap:.55rem; padding:.7rem .8rem; cursor:pointer; min-height:48px;}
+.pcard-name{flex:1; font-size:.9rem; font-weight:600;}
+.pcard-name .strike{text-decoration:line-through;}
+.pcard-total{font-size:.95rem; font-weight:800; color:var(--orange);}
+.pcard-total.dim{color:var(--text);}
+.chev{color:var(--muted); font-size:1.1rem; transition:transform .2s;}
+.pcard.open .chev{transform:rotate(180deg);}
+.pcard-body{padding:0 .8rem .8rem; display:none;}
+.pcard.open .pcard-body{display:block;}
+.round-bar{display:flex; height:7px; border-radius:4px; overflow:hidden; background:var(--card2); margin-bottom:.5rem;}
+.ledger-row{display:flex; align-items:flex-start; gap:.5rem; background:#0d1322; border-radius:.45rem; padding:.45rem .6rem; margin-bottom:.35rem;}
+.ledger-rnd{font-size:.6rem; font-weight:700; color:var(--muted); background:var(--card2); padding:.15rem .4rem; border-radius:.25rem; min-width:34px; text-align:center; margin-top:1px;}
+.ledger-rnd.knock{background:rgba(168,85,247,.18); color:var(--purple);}
+.chips{flex:1; display:flex; flex-wrap:wrap; gap:.25rem;}
+.chip{font-size:.66rem; font-weight:600; padding:.12rem .45rem; border-radius:.35rem; background:var(--card2); color:#94a3b8;}
+.chip.goal{background:rgba(249,115,22,.16); color:#fb923c;}
+.chip.assist{background:rgba(59,130,246,.16); color:#60a5fa;}
+.chip.cs{background:rgba(34,197,94,.16); color:#4ade80;}
+.chip.neg{background:rgba(239,68,68,.16); color:#f87171;}
+.ledger-pts{font-size:.78rem; font-weight:800; margin-top:1px;}
+
+/* TABLES */
+.tbl{width:100%; border-collapse:collapse; font-size:.82rem;}
+.tbl th{text-align:left; color:var(--muted); font-weight:700; font-size:.7rem; text-transform:uppercase; letter-spacing:.03em; padding:.5rem .4rem; border-bottom:1px solid var(--border);}
+.tbl td{padding:.5rem .4rem; border-bottom:1px solid var(--border);}
+.tbl tr:last-child td{border-bottom:none;}
+.scroll-x{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+
+/* SCORING RUBRIC */
+.rubric-grid{display:grid; grid-template-columns:1fr auto; gap:.1rem .5rem;}
+.rubric-row{display:contents;}
+.rubric-row > div{padding:.55rem .2rem; border-bottom:1px solid var(--border);}
+.rubric-label{color:var(--text); font-size:.86rem;}
+.rubric-val{text-align:right; font-weight:800; font-family:ui-monospace,monospace;}
+.rubric-val.pos{color:var(--green);} .rubric-val.neg{color:var(--red);}
+.section-h{font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); font-weight:700; margin:1.1rem 0 .4rem;}
+
+.toolbar{display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1rem;}
+.banner{background:rgba(59,130,246,.1); border:1px solid var(--blue); border-radius:.6rem; padding:.7rem .9rem; font-size:.8rem; color:#bfdbfe; margin-bottom:1rem; display:flex; gap:.5rem; align-items:flex-start;}
+.banner .ti{color:var(--blue); font-size:1.1rem; flex-shrink:0;}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.7.0/tabler-icons.min.css">
+</head>
+<body>
+
+<div id="pwScreen" class="pw-wrap">
+  <div class="pw-card">
+    <div class="logo">Silver Madness 2</div>
+    <div class="tag">THE WORLD CUP WARRIOR</div>
+    <input id="pwInput" type="password" inputmode="text" placeholder="enter password" autocomplete="off">
+    <div class="pw-err" id="pwErr"></div>
+    <button class="btn btn-primary" style="width:100%;" onclick="checkPw()">Enter</button>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <header>
+    <div class="head-row">
+      <div class="logo">Silver Madness 2<small>WORLD CUP WARRIOR · 2022 TEST BUILD</small></div>
+      <nav class="top-nav" id="topNav"></nav>
+    </div>
+  </header>
+  <main id="view"></main>
+  <nav class="bottom-nav" id="bottomNav"></nav>
+</div>
+
+<script>
+// ============================================================
+// Silver Madness 2 — scoring engine + curated 2022 test data
+// This module is the single source of truth for scoring.
+// Validated in node before being embedded into the app.
+// ============================================================
+
+// ---- SCORING CONFIG (single source of truth; Scoring tab renders from this) ----
+const SCORING = {
+  goal:        { GK: 6, DEF: 6, MID: 5, FWD: 4 },
+  assist:      3,
+  appearance:  1,      // played 1-59 minutes
+  played60:    2,      // played 60+ minutes
+  cleanSheet:  { GK: 4, DEF: 4, MID: 1, FWD: 0 }, // requires 60+ min, team conceded 0
+  yellow:     -1,
+  red:        -3,
+  ownGoal:    -2,
+  penMiss:    -2,
+};
+
+// Round keys for 2022 (32-team format). 2026 will insert 'r32' after group.
+const ROUNDS_2022 = ['group', 'r16', 'qf', 'sf', 'final'];
+const ROUND_LABEL = { group: 'Group', r32: 'R32', r16: 'R16', qf: 'QF', sf: 'SF', final: 'Final' };
+
+// ---- TEAMS: 2022-era FIFA rank + stage reached ----
+// stage: group | r16 | qf | sf | final | champion
+const TEAMS = {
+  ARG: { name: 'Argentina',    rank: 3,  stage: 'champion' },
+  FRA: { name: 'France',       rank: 4,  stage: 'final' },
+  CRO: { name: 'Croatia',      rank: 12, stage: 'sf' },     // 3rd
+  MAR: { name: 'Morocco',      rank: 22, stage: 'sf' },     // 4th
+  NED: { name: 'Netherlands',  rank: 8,  stage: 'qf' },
+  BRA: { name: 'Brazil',       rank: 1,  stage: 'qf' },
+  ENG: { name: 'England',      rank: 5,  stage: 'qf' },
+  POR: { name: 'Portugal',     rank: 9,  stage: 'qf' },
+  USA: { name: 'USA',          rank: 16, stage: 'r16' },
+  AUS: { name: 'Australia',    rank: 38, stage: 'r16' },
+  POL: { name: 'Poland',       rank: 26, stage: 'r16' },
+  SEN: { name: 'Senegal',      rank: 18, stage: 'r16' },
+  JPN: { name: 'Japan',        rank: 24, stage: 'r16' },
+  KOR: { name: 'South Korea',  rank: 28, stage: 'r16' },
+  ESP: { name: 'Spain',        rank: 7,  stage: 'r16' },
+  SUI: { name: 'Switzerland',  rank: 15, stage: 'r16' },
+  ECU: { name: 'Ecuador',      rank: 44, stage: 'group' },
+  QAT: { name: 'Qatar',        rank: 50, stage: 'group' },
+  IRN: { name: 'Iran',         rank: 20, stage: 'group' },
+  WAL: { name: 'Wales',        rank: 19, stage: 'group' },
+  MEX: { name: 'Mexico',       rank: 13, stage: 'group' },
+  KSA: { name: 'Saudi Arabia', rank: 51, stage: 'group' },
+  TUN: { name: 'Tunisia',      rank: 30, stage: 'group' },
+  DEN: { name: 'Denmark',      rank: 10, stage: 'group' },
+  GER: { name: 'Germany',      rank: 11, stage: 'group' },
+  CRC: { name: 'Costa Rica',   rank: 31, stage: 'group' },
+  BEL: { name: 'Belgium',      rank: 2,  stage: 'group' },
+  CAN: { name: 'Canada',       rank: 41, stage: 'group' },
+  CMR: { name: 'Cameroon',     rank: 43, stage: 'group' },
+  SRB: { name: 'Serbia',       rank: 21, stage: 'group' },
+  URU: { name: 'Uruguay',      rank: 14, stage: 'group' },
+  GHA: { name: 'Ghana',        rank: 61, stage: 'group' },
+};
+
+const STAGE_ORDER = { group: 0, r16: 1, qf: 2, sf: 3, final: 4, champion: 5 };
+// teams ranked 40th or lower satisfy the draft requirement
+function eligibleUnderdog(code) { return TEAMS[code].rank >= 40; }
+
+// ---- PLAYERS ----
+// matches: array of stat lines {r, g, a, min, cs, yc, rc, og, pm}
+// Only fields that occur need be present. Accurate goals/assists for notable
+// players; appearance/minutes filled to plausible values for squad depth.
+// m(round, goals, assists, minutes, opts) helper to keep data compact.
+function m(r, g = 0, a = 0, min = 90, opts = {}) {
+  return Object.assign({ r, g, a, min, cs: false, yc: 0, rc: 0, og: 0, pm: 0 }, opts);
+}
+
+const PLAYERS = [
+  // ---------------- ARGENTINA (champion) ----------------
+  { id: 'arg-messi', name: 'Lionel Messi', team: 'ARG', pos: 'FWD', matches: [
+    m('group',1,0,90),m('group',1,1,90),m('group',0,0,90,{pm:1}),
+    m('r16',1,0,90),m('qf',1,1,120),m('sf',1,1,90),m('final',2,0,120) ] },
+  { id: 'arg-alvarez', name: 'Julián Álvarez', team: 'ARG', pos: 'FWD', matches: [
+    m('group',0,0,30),m('group',0,0,75),m('group',1,0,90),
+    m('r16',1,0,90),m('qf',0,0,120),m('sf',2,0,90),m('final',0,0,120) ] },
+  { id: 'arg-dimaria', name: 'Ángel Di María', team: 'ARG', pos: 'MID', matches: [
+    m('group',0,0,63),m('r16',0,1,90),m('final',1,0,64) ] },
+  { id: 'arg-mac', name: 'Enzo Fernández', team: 'ARG', pos: 'MID', matches: [
+    m('group',1,0,58),m('group',0,0,90),m('r16',0,0,90),m('qf',0,0,120),m('sf',0,0,90),m('final',0,0,120) ] },
+  { id: 'arg-molina', name: 'Nahuel Molina', team: 'ARG', pos: 'DEF', matches: [
+    m('group',0,0,90),m('qf',1,0,120),m('sf',0,1,90),m('final',0,0,120,{cs:false}) ] },
+  { id: 'arg-otamendi', name: 'Nicolás Otamendi', team: 'ARG', pos: 'DEF', matches: [
+    m('group',0,0,90,{cs:true}),m('group',0,0,90),m('r16',0,0,90),m('qf',0,0,120),m('sf',0,0,90,{cs:true}),m('final',0,0,120) ] },
+  { id: 'arg-martinez', name: 'Emiliano Martínez', team: 'ARG', pos: 'GK', matches: [
+    m('group',0,0,90),m('group',0,0,90,{cs:true}),m('r16',0,0,90),m('qf',0,0,120),m('sf',0,0,90,{cs:true}),m('final',0,0,120) ] },
+  { id: 'arg-mactavish', name: 'Alexis Mac Allister', team: 'ARG', pos: 'MID', matches: [
+    m('group',1,1,90),m('r16',0,1,90),m('qf',0,0,120),m('sf',0,0,77),m('final',0,0,116) ] },
+
+  // ---------------- FRANCE (final) ----------------
+  { id: 'fra-mbappe', name: 'Kylian Mbappé', team: 'FRA', pos: 'FWD', matches: [
+    m('group',1,1,90),m('group',2,0,90),m('group',0,0,30),m('r16',2,1,90),m('qf',0,0,90),m('sf',0,0,90),m('final',3,0,120) ] },
+  { id: 'fra-giroud', name: 'Olivier Giroud', team: 'FRA', pos: 'FWD', matches: [
+    m('group',2,0,90),m('r16',1,0,90),m('qf',1,0,90),m('sf',0,0,65),m('final',0,0,41) ] },
+  { id: 'fra-griezmann', name: 'Antoine Griezmann', team: 'FRA', pos: 'MID', matches: [
+    m('group',0,1,90),m('group',0,1,90),m('r16',0,1,90),m('qf',0,0,90),m('sf',0,0,90),m('final',0,0,120) ] },
+  { id: 'fra-dembele', name: 'Ousmane Dembélé', team: 'FRA', pos: 'FWD', matches: [
+    m('group',0,1,90),m('r16',0,0,72),m('qf',0,1,84),m('sf',0,0,79),m('final',0,0,41) ] },
+  { id: 'fra-tchouameni', name: 'Aurélien Tchouaméni', team: 'FRA', pos: 'MID', matches: [
+    m('group',0,0,90),m('r16',0,1,90),m('qf',0,0,90),m('sf',0,0,90),m('final',0,0,120,{yc:1}) ] },
+  { id: 'fra-theo', name: 'Theo Hernández', team: 'FRA', pos: 'DEF', matches: [
+    m('group',0,1,90),m('r16',0,1,90),m('sf',1,0,90),m('final',0,0,120) ] },
+  { id: 'fra-koundé', name: 'Jules Koundé', team: 'FRA', pos: 'DEF', matches: [
+    m('group',0,0,90),m('r16',0,0,90),m('qf',0,1,90),m('final',0,0,120) ] },
+  { id: 'fra-lloris', name: 'Hugo Lloris', team: 'FRA', pos: 'GK', matches: [
+    m('group',0,0,90),m('r16',0,0,90,{cs:true}),m('qf',0,0,90),m('sf',0,0,90,{cs:true}),m('final',0,0,120) ] },
+  { id: 'fra-rabiot', name: 'Adrien Rabiot', team: 'FRA', pos: 'MID', matches: [
+    m('group',1,0,90),m('r16',0,1,90),m('qf',0,0,90),m('final',0,0,76) ] },
+
+  // ---------------- CROATIA (3rd) ----------------
+  { id: 'cro-modric', name: 'Luka Modrić', team: 'CRO', pos: 'MID', matches: [
+    m('group',0,0,90),m('group',0,0,90),m('r16',0,0,98),m('qf',0,0,120),m('sf',0,0,81),m('final',0,0,90) ] },
+  { id: 'cro-perisic', name: 'Ivan Perišić', team: 'CRO', pos: 'MID', matches: [
+    m('group',0,1,90),m('r16',0,1,120),m('qf',0,0,120),m('sf',0,0,90),m('final',0,1,90) ] },
+  { id: 'cro-kramaric', name: 'Andrej Kramarić', team: 'CRO', pos: 'FWD', matches: [
+    m('group',2,0,90),m('r16',0,0,98),m('qf',0,0,106),m('final',1,0,90) ] },
+  { id: 'cro-orsic', name: 'Mislav Oršić', team: 'CRO', pos: 'FWD', matches: [
+    m('group',0,0,20),m('final',1,0,90) ] },
+  { id: 'cro-livakovic', name: 'Dominik Livaković', team: 'CRO', pos: 'GK', matches: [
+    m('group',0,0,90,{cs:true}),m('r16',0,0,120),m('qf',0,0,120),m('sf',0,0,90),m('final',0,0,90) ] },
+  { id: 'cro-gvardiol', name: 'Joško Gvardiol', team: 'CRO', pos: 'DEF', matches: [
+    m('group',0,0,90),m('r16',0,0,120),m('qf',0,0,120),m('sf',0,0,90),m('final',1,0,90) ] },
+
+  // ---------------- MOROCCO (4th) ----------------
+  { id: 'mar-ennesyri', name: 'Youssef En-Nesyri', team: 'MAR', pos: 'FWD', matches: [
+    m('group',0,0,90),m('r16',0,0,90),m('qf',1,0,90),m('sf',0,0,90),m('final',0,0,90) ] },
+  { id: 'mar-ziyech', name: 'Hakim Ziyech', team: 'MAR', pos: 'MID', matches: [
+    m('group',0,0,90),m('group',0,1,90),m('r16',0,0,120),m('qf',0,0,90),m('sf',0,0,90) ] },
+  { id: 'mar-hakimi', name: 'Achraf Hakimi', team: 'MAR', pos: 'DEF', matches: [
+    m('group',0,0,90,{cs:true}),m('r16',0,0,120),m('qf',0,0,90,{cs:true}),m('sf',0,0,90),m('final',0,0,90) ] },
+  { id: 'mar-amrabat', name: 'Sofyan Amrabat', team: 'MAR', pos: 'MID', matches: [
+    m('group',0,0,90),m('r16',0,0,120),m('qf',0,0,90),m('sf',0,0,90),m('final',0,0,90) ] },
+  { id: 'mar-bono', name: 'Yassine Bounou', team: 'MAR', pos: 'GK', matches: [
+    m('group',0,0,90,{cs:true}),m('r16',0,0,120),m('qf',0,0,90,{cs:true}),m('sf',0,0,90),m('final',0,0,90) ] },
+  { id: 'mar-cheddira', name: 'Walid Cheddira', team: 'MAR', pos: 'FWD', matches: [
+    m('group',0,0,20),m('qf',0,0,15),m('sf',0,0,25,{rc:1}) ] },
+
+  // ---------------- NETHERLANDS (QF) ----------------
+  { id: 'ned-gakpo', name: 'Cody Gakpo', team: 'NED', pos: 'FWD', matches: [
+    m('group',1,0,90),m('group',1,0,90),m('group',1,0,83),m('r16',0,0,90),m('qf',0,0,120) ] },
+  { id: 'ned-depay', name: 'Memphis Depay', team: 'NED', pos: 'FWD', matches: [
+    m('group',0,0,45),m('r16',0,1,76),m('qf',0,0,120) ] },
+  { id: 'ned-dejong', name: 'Frenkie de Jong', team: 'NED', pos: 'MID', matches: [
+    m('group',0,0,90),m('r16',0,0,90),m('qf',0,0,120) ] },
+  { id: 'ned-vandijk', name: 'Virgil van Dijk', team: 'NED', pos: 'DEF', matches: [
+    m('group',0,0,90,{cs:true}),m('group',0,1,90),m('r16',0,0,90),m('qf',0,0,120) ] },
+  { id: 'ned-blind', name: 'Daley Blind', team: 'NED', pos: 'DEF', matches: [
+    m('group',0,0,90),m('r16',1,0,90),m('qf',0,0,120) ] },
+  { id: 'ned-koopmeiners', name: 'Teun Koopmeiners', team: 'NED', pos: 'MID', matches: [
+    m('group',0,0,90),m('r16',0,0,80),m('qf',0,0,30) ] },
+
+  // ---------------- BRAZIL (QF) ----------------
+  { id: 'bra-richarlison', name: 'Richarlison', team: 'BRA', pos: 'FWD', matches: [
+    m('group',2,0,90),m('group',1,0,73),m('r16',0,0,90),m('qf',0,0,77) ] },
+  { id: 'bra-neymar', name: 'Neymar', team: 'BRA', pos: 'FWD', matches: [
+    m('group',0,0,80),m('r16',0,0,90),m('qf',1,0,120,{pm:0}) ] },
+  { id: 'bra-casemiro', name: 'Casemiro', team: 'BRA', pos: 'MID', matches: [
+    m('group',1,0,90),m('group',0,0,90),m('r16',0,1,90),m('qf',0,0,120) ] },
+  { id: 'bra-vinicius', name: 'Vinícius Júnior', team: 'BRA', pos: 'FWD', matches: [
+    m('group',0,1,90),m('r16',1,0,90),m('qf',0,0,84) ] },
+  { id: 'bra-lucaspaqueta', name: 'Lucas Paquetá', team: 'BRA', pos: 'MID', matches: [
+    m('group',0,1,90),m('r16',1,0,90),m('qf',0,0,120) ] },
+  { id: 'bra-alisson', name: 'Alisson', team: 'BRA', pos: 'GK', matches: [
+    m('group',0,0,90,{cs:true}),m('group',0,0,90,{cs:true}),m('r16',0,0,90),m('qf',0,0,120) ] },
+  { id: 'bra-marquinhos', name: 'Marquinhos', team: 'BRA', pos: 'DEF', matches: [
+    m('group',0,0,90,{cs:true}),m('r16',0,0,90),m('qf',0,0,120,{pm:1}) ] },
+
+  // ---------------- ENGLAND (QF) ----------------
+  { id: 'eng-rashford', name: 'Marcus Rashford', team: 'ENG', pos: 'FWD', matches: [
+    m('group',0,0,17),m('group',3,0,90),m('r16',0,0,73) ] },
+  { id: 'eng-saka', name: 'Bukayo Saka', team: 'ENG', pos: 'FWD', matches: [
+    m('group',2,0,90),m('group',0,0,71),m('r16',1,0,90),m('qf',0,0,90) ] },
+  { id: 'eng-kane', name: 'Harry Kane', team: 'ENG', pos: 'FWD', matches: [
+    m('group',0,2,90),m('group',0,1,90),m('group',0,0,90),m('r16',1,0,90),m('qf',1,0,90,{pm:1}) ] },
+  { id: 'eng-foden', name: 'Phil Foden', team: 'ENG', pos: 'MID', matches: [
+    m('group',1,1,90),m('r16',0,1,90),m('qf',0,0,90) ] },
+  { id: 'eng-bellingham', name: 'Jude Bellingham', team: 'ENG', pos: 'MID', matches: [
+    m('group',1,1,90),m('group',0,0,90),m('r16',0,1,90),m('qf',0,0,90) ] },
+  { id: 'eng-grealish', name: 'Jack Grealish', team: 'ENG', pos: 'MID', matches: [
+    m('group',1,0,38),m('r16',0,1,15),m('qf',0,0,32) ] },
+  { id: 'eng-pickford', name: 'Jordan Pickford', team: 'ENG', pos: 'GK', matches: [
+    m('group',0,0,90),m('group',0,0,90,{cs:true}),m('r16',0,0,90),m('qf',0,0,90) ] },
+
+  // ---------------- PORTUGAL (QF) ----------------
+  { id: 'por-ramos', name: 'Gonçalo Ramos', team: 'POR', pos: 'FWD', matches: [
+    m('group',0,0,12),m('r16',3,1,90),m('qf',0,0,82) ] },
+  { id: 'por-ronaldo', name: 'Cristiano Ronaldo', team: 'POR', pos: 'FWD', matches: [
+    m('group',1,0,90,{pm:0}),m('group',0,0,82),m('r16',0,0,17),m('qf',0,0,41) ] },
+  { id: 'por-bruno', name: 'Bruno Fernandes', team: 'POR', pos: 'MID', matches: [
+    m('group',0,1,90),m('group',2,1,90),m('group',0,1,90),m('r16',0,0,90),m('qf',0,0,90) ] },
+  { id: 'por-felix', name: 'João Félix', team: 'POR', pos: 'FWD', matches: [
+    m('group',1,0,90),m('group',0,1,69),m('r16',0,0,73),m('qf',0,0,55) ] },
+  { id: 'por-horta', name: 'Ricardo Horta', team: 'POR', pos: 'MID', matches: [
+    m('group',0,0,45) ] },
+  { id: 'por-costa', name: 'Diogo Costa', team: 'POR', pos: 'GK', matches: [
+    m('group',0,0,90,{cs:true}),m('r16',0,0,90),m('qf',0,0,90) ] },
+  { id: 'por-pepe', name: 'Pepe', team: 'POR', pos: 'DEF', matches: [
+    m('group',0,0,90),m('r16',1,0,90),m('qf',0,0,90) ] },
+
+  // ---------------- USA (R16) — eligible? rank 16 no ----------------
+  { id: 'usa-pulisic', name: 'Christian Pulisic', team: 'USA', pos: 'FWD', matches: [
+    m('group',0,1,90),m('group',1,0,90),m('r16',0,0,66) ] },
+  { id: 'usa-weah', name: 'Timothy Weah', team: 'USA', pos: 'FWD', matches: [
+    m('group',1,0,90),m('group',0,0,72),m('r16',0,0,90) ] },
+  { id: 'usa-turner', name: 'Matt Turner', team: 'USA', pos: 'GK', matches: [
+    m('group',0,0,90),m('group',0,0,90,{cs:true}),m('r16',0,0,90) ] },
+  { id: 'usa-mckennie', name: 'Weston McKennie', team: 'USA', pos: 'MID', matches: [
+    m('group',0,0,90),m('r16',0,0,90) ] },
+
+  // ---------------- AUSTRALIA (R16) rank 38 ----------------
+  { id: 'aus-duke', name: 'Mitchell Duke', team: 'AUS', pos: 'FWD', matches: [
+    m('group',1,0,75),m('group',0,0,60),m('r16',0,0,71) ] },
+  { id: 'aus-leckie', name: 'Mathew Leckie', team: 'AUS', pos: 'FWD', matches: [
+    m('group',0,0,80),m('group',1,0,90),m('r16',0,0,82) ] },
+  { id: 'aus-ryan', name: 'Mathew Ryan', team: 'AUS', pos: 'GK', matches: [
+    m('group',0,0,90),m('group',0,0,90,{cs:true}),m('r16',0,0,90) ] },
+
+  // ---------------- POLAND (R16) rank 26 ----------------
+  { id: 'pol-lewandowski', name: 'Robert Lewandowski', team: 'POL', pos: 'FWD', matches: [
+    m('group',0,0,90,{pm:1}),m('group',1,0,90),m('r16',1,0,90) ] },
+  { id: 'pol-zielinski', name: 'Piotr Zieliński', team: 'POL', pos: 'MID', matches: [
+    m('group',0,0,90),m('group',0,1,90),m('r16',0,0,79) ] },
+  { id: 'pol-szczesny', name: 'Wojciech Szczęsny', team: 'POL', pos: 'GK', matches: [
+    m('group',0,0,90,{cs:true}),m('group',0,0,90,{cs:true}),m('r16',0,0,90) ] },
+
+  // ---------------- SENEGAL (R16) rank 18 ----------------
+  { id: 'sen-dia', name: 'Boulaye Dia', team: 'SEN', pos: 'FWD', matches: [
+    m('group',1,0,75),m('group',0,0,65),m('r16',0,0,80) ] },
+  { id: 'sen-koulibaly', name: 'Kalidou Koulibaly', team: 'SEN', pos: 'DEF', matches: [
+    m('group',0,0,90),m('group',1,0,90,{cs:true}),m('r16',0,0,90) ] },
+  { id: 'sen-mendy', name: 'Édouard Mendy', team: 'SEN', pos: 'GK', matches: [
+    m('group',0,0,90),m('group',0,0,90,{cs:true}),m('r16',0,0,90) ] },
+
+  // ---------------- JAPAN (R16) rank 24 ----------------
+  { id: 'jpn-doan', name: 'Ritsu Doan', team: 'JPN', pos: 'MID', matches: [
+    m('group',1,0,45),m('group',1,0,57),m('r16',0,0,90) ] },
+  { id: 'jpn-tanaka', name: 'Ao Tanaka', team: 'JPN', pos: 'MID', matches: [
+    m('group',0,0,60),m('group',1,0,90),m('r16',0,0,120) ] },
+  { id: 'jpn-mitoma', name: 'Kaoru Mitoma', team: 'JPN', pos: 'FWD', matches: [
+    m('group',0,1,30),m('group',0,0,90),m('r16',0,0,120) ] },
+
+  // ---------------- SOUTH KOREA (R16) rank 28 ----------------
+  { id: 'kor-cho', name: 'Cho Gue-sung', team: 'KOR', pos: 'FWD', matches: [
+    m('group',2,0,90),m('group',0,0,75),m('r16',0,0,68) ] },
+  { id: 'kor-son', name: 'Son Heung-min', team: 'KOR', pos: 'FWD', matches: [
+    m('group',0,0,90),m('group',0,1,90),m('r16',0,0,90) ] },
+  { id: 'kor-kim', name: 'Kim Min-jae', team: 'KOR', pos: 'DEF', matches: [
+    m('group',0,0,90),m('r16',0,0,90) ] },
+
+  // ---------------- SPAIN (R16) rank 7 ----------------
+  { id: 'esp-morata', name: 'Álvaro Morata', team: 'ESP', pos: 'FWD', matches: [
+    m('group',1,0,58),m('group',1,0,70),m('group',1,0,31),m('r16',0,0,70) ] },
+  { id: 'esp-gavi', name: 'Gavi', team: 'ESP', pos: 'MID', matches: [
+    m('group',1,0,74),m('r16',0,0,70) ] },
+  { id: 'esp-ferran', name: 'Ferran Torres', team: 'ESP', pos: 'FWD', matches: [
+    m('group',0,1,57),m('r16',0,0,33) ] },
+  { id: 'esp-simon', name: 'Unai Simón', team: 'ESP', pos: 'GK', matches: [
+    m('group',0,0,90,{cs:true}),m('group',0,0,90),m('r16',0,0,120) ] },
+
+  // ---------------- SWITZERLAND (R16) rank 15 ----------------
+  { id: 'sui-embolo', name: 'Breel Embolo', team: 'SUI', pos: 'FWD', matches: [
+    m('group',1,0,90),m('group',0,0,90),m('r16',0,0,90) ] },
+  { id: 'sui-shaqiri', name: 'Xherdan Shaqiri', team: 'SUI', pos: 'MID', matches: [
+    m('group',0,0,90),m('group',1,0,90),m('r16',0,0,79) ] },
+  { id: 'sui-sommer', name: 'Yann Sommer', team: 'SUI', pos: 'GK', matches: [
+    m('group',0,0,90,{cs:true}),m('group',0,0,90),m('r16',0,0,90) ] },
+
+  // ---------------- ECUADOR (group) rank 44 — ELIGIBLE ----------------
+  { id: 'ecu-valencia', name: 'Enner Valencia', team: 'ECU', pos: 'FWD', matches: [
+    m('group',2,0,90,{pm:0}),m('group',1,0,90),m('group',0,0,77) ] },
+  { id: 'ecu-estupinan', name: 'Pervis Estupiñán', team: 'ECU', pos: 'DEF', matches: [
+    m('group',0,1,90,{cs:true}),m('group',0,0,90),m('group',0,0,90) ] },
+  { id: 'ecu-caicedo', name: 'Moisés Caicedo', team: 'ECU', pos: 'MID', matches: [
+    m('group',0,0,90),m('group',0,0,90),m('group',1,0,90) ] },
+
+  // ---------------- QATAR (group) rank 50 — ELIGIBLE ----------------
+  { id: 'qat-afif', name: 'Akram Afif', team: 'QAT', pos: 'FWD', matches: [
+    m('group',0,0,90),m('group',0,0,90),m('group',0,1,90) ] },
+  { id: 'qat-almoez', name: 'Almoez Ali', team: 'QAT', pos: 'FWD', matches: [
+    m('group',0,0,90),m('group',0,0,71),m('group',1,0,90) ] },
+
+  // ---------------- IRAN (group) rank 20 ----------------
+  { id: 'irn-cheshmi', name: 'Roozbeh Cheshmi', team: 'IRN', pos: 'MID', matches: [
+    m('group',0,0,90),m('group',1,0,90) ] },
+  { id: 'irn-taremi', name: 'Mehdi Taremi', team: 'IRN', pos: 'FWD', matches: [
+    m('group',2,0,90),m('group',0,0,90),m('group',0,0,90,{pm:0}) ] },
+
+  // ---------------- WALES (group) rank 19 ----------------
+  { id: 'wal-bale', name: 'Gareth Bale', team: 'WAL', pos: 'FWD', matches: [
+    m('group',1,0,90,{}),m('group',0,0,90),m('group',0,0,45) ] },
+  { id: 'wal-ramsey', name: 'Aaron Ramsey', team: 'WAL', pos: 'MID', matches: [
+    m('group',0,0,90),m('group',0,0,90),m('group',0,0,82) ] },
+
+  // ---------------- MEXICO (group) rank 13 ----------------
+  { id: 'mex-chavez', name: 'Luis Chávez', team: 'MEX', pos: 'MID', matches: [
+    m('group',0,0,75),m('group',1,0,90) ] },
+  { id: 'mex-martin', name: 'Henry Martín', team: 'MEX', pos: 'FWD', matches: [
+    m('group',0,0,58),m('group',0,0,75),m('group',1,0,90) ] },
+  { id: 'mex-ochoa', name: 'Guillermo Ochoa', team: 'MEX', pos: 'GK', matches: [
+    m('group',0,0,90,{cs:true}),m('group',0,0,90),m('group',0,0,90) ] },
+
+  // ---------------- SAUDI ARABIA (group) rank 51 — ELIGIBLE ----------------
+  { id: 'ksa-aldawsari', name: 'Salem Al-Dawsari', team: 'KSA', pos: 'FWD', matches: [
+    m('group',1,0,90),m('group',0,0,90),m('group',0,0,90) ] },
+  { id: 'ksa-alshehri', name: 'Saleh Al-Shehri', team: 'KSA', pos: 'FWD', matches: [
+    m('group',1,0,74),m('group',0,0,68),m('group',0,0,60) ] },
+  { id: 'ksa-alowais', name: 'Mohammed Al-Owais', team: 'KSA', pos: 'GK', matches: [
+    m('group',0,0,90),m('group',0,0,90),m('group',0,0,90) ] },
+
+  // ---------------- TUNISIA (group) rank 30 ----------------
+  { id: 'tun-khazri', name: 'Wahbi Khazri', team: 'TUN', pos: 'FWD', matches: [
+    m('group',0,0,65),m('group',1,0,90) ] },
+
+  // ---------------- DENMARK (group) rank 10 ----------------
+  { id: 'den-eriksen', name: 'Christian Eriksen', team: 'DEN', pos: 'MID', matches: [
+    m('group',0,0,90),m('group',0,0,90),m('group',0,0,90) ] },
+  { id: 'den-schmeichel', name: 'Kasper Schmeichel', team: 'DEN', pos: 'GK', matches: [
+    m('group',0,0,90,{cs:true}),m('group',0,0,90),m('group',0,0,90) ] },
+
+  // ---------------- GERMANY (group) rank 11 ----------------
+  { id: 'ger-gnabry', name: 'Serge Gnabry', team: 'GER', pos: 'FWD', matches: [
+    m('group',0,0,90),m('group',1,0,90),m('group',0,1,90) ] },
+  { id: 'ger-fullkrug', name: 'Niclas Füllkrug', team: 'GER', pos: 'FWD', matches: [
+    m('group',1,0,27),m('group',1,0,45),m('group',0,1,76) ] },
+  { id: 'ger-musiala', name: 'Jamal Musiala', team: 'GER', pos: 'MID', matches: [
+    m('group',0,0,90),m('group',0,0,76),m('group',0,0,79) ] },
+  { id: 'ger-havertz', name: 'Kai Havertz', team: 'GER', pos: 'FWD', matches: [
+    m('group',0,0,45),m('group',2,0,45),m('group',0,1,76) ] },
+
+  // ---------------- COSTA RICA (group) rank 31 ----------------
+  { id: 'crc-tejeda', name: 'Yeltsin Tejeda', team: 'CRC', pos: 'MID', matches: [
+    m('group',0,0,90),m('group',1,0,90) ] },
+  { id: 'crc-navas', name: 'Keylor Navas', team: 'CRC', pos: 'GK', matches: [
+    m('group',0,0,90),m('group',0,0,90,{cs:true}),m('group',0,0,90) ] },
+
+  // ---------------- BELGIUM (group) rank 2 ----------------
+  { id: 'bel-debruyne', name: 'Kevin De Bruyne', team: 'BEL', pos: 'MID', matches: [
+    m('group',0,0,90),m('group',0,1,90),m('group',0,0,90) ] },
+  { id: 'bel-batshuayi', name: 'Michy Batshuayi', team: 'BEL', pos: 'FWD', matches: [
+    m('group',1,0,90),m('group',0,0,90),m('group',0,0,46) ] },
+  { id: 'bel-courtois', name: 'Thibaut Courtois', team: 'BEL', pos: 'GK', matches: [
+    m('group',0,0,90,{cs:true}),m('group',0,0,90),m('group',0,0,90) ] },
+
+  // ---------------- CANADA (group) rank 41 — ELIGIBLE ----------------
+  { id: 'can-davies', name: 'Alphonso Davies', team: 'CAN', pos: 'DEF', matches: [
+    m('group',0,0,90),m('group',1,0,90),m('group',0,0,90) ] },
+  { id: 'can-hutchinson', name: 'Atiba Hutchinson', team: 'CAN', pos: 'MID', matches: [
+    m('group',0,0,16),m('group',0,0,46) ] },
+
+  // ---------------- CAMEROON (group) rank 43 — ELIGIBLE ----------------
+  { id: 'cmr-aboubakar', name: 'Vincent Aboubakar', team: 'CMR', pos: 'FWD', matches: [
+    m('group',0,0,30),m('group',1,1,77,{rc:0}),m('group',1,0,90,{rc:1}) ] },
+  { id: 'cmr-choupo', name: 'Eric Maxim Choupo-Moting', team: 'CMR', pos: 'FWD', matches: [
+    m('group',0,0,90),m('group',0,1,90),m('group',0,0,90) ] },
+
+  // ---------------- SERBIA (group) rank 21 ----------------
+  { id: 'srb-mitrovic', name: 'Aleksandar Mitrović', team: 'SRB', pos: 'FWD', matches: [
+    m('group',0,0,90),m('group',1,1,90),m('group',0,0,90) ] },
+  { id: 'srb-milinkovic', name: 'Sergej Milinković-Savić', team: 'SRB', pos: 'MID', matches: [
+    m('group',0,0,90),m('group',1,1,90),m('group',0,0,90) ] },
+
+  // ---------------- URUGUAY (group) rank 14 ----------------
+  { id: 'uru-degiorgi', name: 'Giorgian de Arrascaeta', team: 'URU', pos: 'MID', matches: [
+    m('group',0,0,46),m('group',2,0,90),m('group',0,0,90) ] },
+  { id: 'uru-nunez', name: 'Darwin Núñez', team: 'URU', pos: 'FWD', matches: [
+    m('group',0,0,90),m('group',0,0,63),m('group',0,0,90) ] },
+  { id: 'uru-rochet', name: 'Sergio Rochet', team: 'URU', pos: 'GK', matches: [
+    m('group',0,0,90,{cs:true}),m('group',0,0,90),m('group',0,0,90,{cs:true}) ] },
+
+  // ---------------- GHANA (group) rank 61 — ELIGIBLE ----------------
+  { id: 'gha-kudus', name: 'Mohammed Kudus', team: 'GHA', pos: 'MID', matches: [
+    m('group',0,0,90),m('group',2,0,90),m('group',0,0,90) ] },
+  { id: 'gha-ayew', name: 'André Ayew', team: 'GHA', pos: 'FWD', matches: [
+    m('group',0,0,90),m('group',1,0,90),m('group',0,0,77) ] },
+  { id: 'gha-williams', name: 'Iñaki Williams', team: 'GHA', pos: 'FWD', matches: [
+    m('group',0,0,77),m('group',0,0,90) ] },
+
+  // ---- extra depth from eligible (40th or lower) teams ----
+  { id: 'ecu-felixtorres', name: 'Félix Torres', team: 'ECU', pos: 'DEF', matches: [ m('group',0,0,90,{cs:true}),m('group',0,0,90),m('group',0,0,90) ] },
+  { id: 'ecu-plata', name: 'Gonzalo Plata', team: 'ECU', pos: 'FWD', matches: [ m('group',0,1,90),m('group',0,0,79),m('group',0,0,65) ] },
+  { id: 'ecu-preciado', name: 'Ángelo Preciado', team: 'ECU', pos: 'DEF', matches: [ m('group',0,0,90),m('group',0,0,90) ] },
+  { id: 'ecu-galindez', name: 'Hernán Galíndez', team: 'ECU', pos: 'GK', matches: [ m('group',0,0,90),m('group',0,0,90),m('group',0,0,90) ] },
+  { id: 'qat-haydos', name: 'Hassan Al-Haydos', team: 'QAT', pos: 'MID', matches: [ m('group',0,0,75),m('group',0,0,72),m('group',0,0,60) ] },
+  { id: 'qat-khoukhi', name: 'Boualem Khoukhi', team: 'QAT', pos: 'DEF', matches: [ m('group',0,0,90),m('group',0,0,90) ] },
+  { id: 'qat-barsham', name: 'Meshaal Barsham', team: 'QAT', pos: 'GK', matches: [ m('group',0,0,90),m('group',0,0,90) ] },
+  { id: 'ksa-buraikan', name: 'Firas Al-Buraikan', team: 'KSA', pos: 'FWD', matches: [ m('group',0,0,74),m('group',0,0,62),m('group',0,0,70) ] },
+  { id: 'ksa-najei', name: 'Sami Al-Najei', team: 'KSA', pos: 'MID', matches: [ m('group',0,0,80),m('group',0,0,90) ] },
+  { id: 'ksa-shahrani', name: 'Yasser Al-Shahrani', team: 'KSA', pos: 'DEF', matches: [ m('group',0,0,90) ] },
+  { id: 'can-david', name: 'Jonathan David', team: 'CAN', pos: 'FWD', matches: [ m('group',0,0,90),m('group',0,0,90),m('group',0,0,68) ] },
+  { id: 'can-larin', name: 'Cyle Larin', team: 'CAN', pos: 'FWD', matches: [ m('group',0,0,65),m('group',0,0,46),m('group',0,0,58) ] },
+  { id: 'can-buchanan', name: 'Tajon Buchanan', team: 'CAN', pos: 'MID', matches: [ m('group',0,0,90),m('group',0,0,90),m('group',0,0,90) ] },
+  { id: 'can-borjan', name: 'Milan Borjan', team: 'CAN', pos: 'GK', matches: [ m('group',0,0,90),m('group',0,0,90),m('group',0,0,90) ] },
+  { id: 'cmr-onana', name: 'André Onana', team: 'CMR', pos: 'GK', matches: [ m('group',0,0,90) ] },
+  { id: 'cmr-mbeumo', name: 'Bryan Mbeumo', team: 'CMR', pos: 'FWD', matches: [ m('group',0,0,75),m('group',0,0,46),m('group',0,0,60) ] },
+  { id: 'cmr-tokoekambi', name: 'Karl Toko Ekambi', team: 'CMR', pos: 'FWD', matches: [ m('group',0,0,68),m('group',0,0,60),m('group',0,0,77) ] },
+  { id: 'gha-partey', name: 'Thomas Partey', team: 'GHA', pos: 'MID', matches: [ m('group',0,0,90),m('group',0,0,90),m('group',0,0,90) ] },
+  { id: 'gha-jordanayew', name: 'Jordan Ayew', team: 'GHA', pos: 'FWD', matches: [ m('group',0,0,90),m('group',0,1,90),m('group',0,0,90) ] },
+  { id: 'gha-salisu', name: 'Mohammed Salisu', team: 'GHA', pos: 'DEF', matches: [ m('group',0,0,90),m('group',0,0,90) ] },
+];
+
+// ---- ENGINE ----
+function matchPoints(player, line) {
+  const s = SCORING;
+  let pts = 0;
+  const parts = [];
+  if (line.g) { const v = s.goal[player.pos] * line.g; pts += v; parts.push({ label: `Goal +${s.goal[player.pos]}${line.g > 1 ? ' ×' + line.g : ''}`, v, sign: 1 }); }
+  if (line.a) { const v = s.assist * line.a; pts += v; parts.push({ label: `Assist +${s.assist}${line.a > 1 ? ' ×' + line.a : ''}`, v, sign: 1 }); }
+  if (line.min >= 60) { pts += s.played60; parts.push({ label: `60+ min +${s.played60}`, v: s.played60, sign: 1 }); }
+  else if (line.min >= 1) { pts += s.appearance; parts.push({ label: `Appearance +${s.appearance}`, v: s.appearance, sign: 1 }); }
+  if (line.cs && line.min >= 60 && s.cleanSheet[player.pos] > 0) { const v = s.cleanSheet[player.pos]; pts += v; parts.push({ label: `Clean sheet +${v}`, v, sign: 1 }); }
+  if (line.yc) { const v = s.yellow * line.yc; pts += v; parts.push({ label: `Yellow ${v}`, v, sign: -1 }); }
+  if (line.rc) { const v = s.red * line.rc; pts += v; parts.push({ label: `Red ${v}`, v, sign: -1 }); }
+  if (line.og) { const v = s.ownGoal * line.og; pts += v; parts.push({ label: `Own goal ${v}`, v, sign: -1 }); }
+  if (line.pm) { const v = s.penMiss * line.pm; pts += v; parts.push({ label: `Pen miss ${v}`, v, sign: -1 }); }
+  return { pts, parts };
+}
+
+function playerTotals(player, rounds) {
+  const byRound = {}; rounds.forEach(r => byRound[r] = 0);
+  let total = 0;
+  player.matches.forEach(line => { const { pts } = matchPoints(player, line); byRound[line.r] += pts; total += pts; });
+  return { total, byRound };
+}
+
+/* ============ CONFIG ============ */
+const PASSWORD = 'SM2026';
+const MANAGERS = ['Manager A','Manager B','Manager C','Manager D','Manager E','Manager F','Manager G','Manager H','Manager I','Manager J'];
+const NUM_MGR = MANAGERS.length;
+const PICKS_PER = 10;
+const TOTAL_PICKS = NUM_MGR * PICKS_PER;
+const REQUIRE_ELIGIBLE = 2;            // >=2 players from teams ranked 40th or lower
+const ROUNDS = ROUNDS_2022;            // 2022 test build
+const POS_ORDER = { GK:0, DEF:1, MID:2, FWD:3 };
+
+/* ============ DATA-LAYER ABSTRACTION ============
+   The app never reads PLAYERS/TEAMS directly in UI code; it goes through
+   `provider`. Swapping in Supabase or a live stats feed later means
+   reimplementing these methods only. Scoring always joins by stable id,
+   never by name — see resolveId() for the name crosswalk. */
+const NAME_CROSSWALK = {
+  // alias (normalized) -> canonical player id. Illustrative entries; the live
+  // build populates this where a feed's name differs from our display name.
+  'kylian mbappe lottin':'fra-mbappe', 'leo messi':'arg-messi',
+  'son heungmin':'kor-son', 'cho guesung':'kor-cho'
+};
+function normName(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,'').replace(/\b(jr|sr|ii|iii)\b/g,'').replace(/\s+/g,' ').trim(); }
+const _byId = Object.fromEntries(PLAYERS.map(p=>[p.id,p]));
+const _byNorm = {}; PLAYERS.forEach(p=>{ _byNorm[normName(p.name)] = p.id; });
+function resolveId(nameOrId){
+  if(_byId[nameOrId]) return nameOrId;
+  const n = normName(nameOrId);
+  if(NAME_CROSSWALK[n]) return NAME_CROSSWALK[n];
+  if(_byNorm[n]) return _byNorm[n];
+  return null;
+}
+const provider = {
+  getPlayer:(id)=>_byId[id],
+  getPlayers:()=>PLAYERS,
+  getTeam:(code)=>TEAMS[code],
+  totals:(id)=>playerTotals(_byId[id], ROUNDS),
+  isEligible:(id)=>eligibleUnderdog(_byId[id].team),
+};
+
+/* ============ STATE ============ */
+var state = { picks: [], started: false };
+var ui = { page:'draft', squadMgr:0, expanded:{}, filter:'all', search:'' };
+
+function saveState(){ try{ localStorage.setItem('sm2_state', JSON.stringify(state)); }catch(e){} }
+function loadState(){ try{ const s=localStorage.getItem('sm2_state'); if(s){ state=JSON.parse(s); } }catch(e){} }
+
+/* ============ DRAFT MATH (snake) ============ */
+function pickerForIndex(n){ const r=Math.floor(n/NUM_MGR); const i=n%NUM_MGR; return (r%2===0)? i : (NUM_MGR-1-i); }
+function currentPickInfo(){
+  const n = state.picks.length;
+  if(n>=TOTAL_PICKS) return null;
+  return { overall:n, round:Math.floor(n/NUM_MGR)+1, mgrIdx:pickerForIndex(n), pickInRound:(n%NUM_MGR)+1 };
+}
+function squadOf(mgrIdx){ return state.picks.filter(p=>p.mgrIdx===mgrIdx); }
+function eligibleCount(mgrIdx){ return squadOf(mgrIdx).filter(p=>provider.isEligible(p.playerId)).length; }
+function draftedIds(){ return new Set(state.picks.map(p=>p.playerId)); }
+function isDraftComplete(){ return state.picks.length>=TOTAL_PICKS; }
+
+/* must the current picker take an eligible player to stay able to hit 2? */
+function mustPickEligible(mgrIdx){
+  const sq = squadOf(mgrIdx);
+  const have = sq.filter(p=>provider.isEligible(p.playerId)).length;
+  const remainingAfter = PICKS_PER - sq.length - 1; // picks left for this mgr after current
+  return (REQUIRE_ELIGIBLE - have) > remainingAfter;
+}
+function canDraft(mgrIdx, playerId){
+  if(mustPickEligible(mgrIdx) && !provider.isEligible(playerId)) return false;
+  return true;
+}
+function makePick(playerId){
+  const info = currentPickInfo(); if(!info) return;
+  if(draftedIds().has(playerId)) return;
+  if(!canDraft(info.mgrIdx, playerId)){ alert(MANAGERS[info.mgrIdx]+' must use this pick on a team ranked 40th or lower to meet the requirement.'); return; }
+  state.picks.push({ mgrIdx:info.mgrIdx, playerId, overall:info.overall });
+  state.started = true; saveState(); render();
+}
+function undoLast(){ if(state.picks.length){ state.picks.pop(); saveState(); render(); } }
+function editPick(overall){
+  const pk = state.picks.find(p=>p.overall===overall); if(!pk) return;
+  const name = prompt('Replace this pick with which player? Type a player name:'); if(!name) return;
+  const id = resolveId(name);
+  if(!id){ alert('No player matched "'+name+'". Check spelling.'); return; }
+  if(draftedIds().has(id) && id!==pk.playerId){ alert('That player is already drafted.'); return; }
+  pk.playerId = id; saveState(); render();
+}
+function clearDraft(){ if(confirm('Clear the entire draft?')){ state={picks:[],started:false}; saveState(); render(); } }
+
+/* ============ 2022 SIMULATION (auto-draft) ============ */
+function seededRand(seed){ let s=seed%2147483647; if(s<=0)s+=2147483646; return ()=>(s=s*16807%2147483647)/2147483647; }
+function runSimulation(){
+  state = { picks:[], started:true };
+  const rnd = seededRand(20221218);
+  // pre-tournament desirability: stronger team + attacking position + jitter
+  const rating = {};
+  PLAYERS.forEach(p=>{
+    const teamStrength = 220 - provider.getTeam(p.team).rank;
+    const posW = { FWD:35, MID:25, DEF:14, GK:10 }[p.pos];
+    rating[p.id] = teamStrength + posW + rnd()*40;
+  });
+  const taken = new Set();
+  for(let n=0;n<TOTAL_PICKS;n++){
+    const mgrIdx = pickerForIndex(n);
+    const forceElig = mustPickEligible(mgrIdx);
+    let pool = PLAYERS.filter(p=>!taken.has(p.id) && (!forceElig || eligibleUnderdog(p.team)));
+    pool.sort((a,b)=>rating[b.id]-rating[a.id]);
+    const pick = pool[0];
+    taken.add(pick.id);
+    state.picks.push({ mgrIdx, playerId:pick.id, overall:n });
+  }
+  saveState(); ui.page='standings'; render();
+}
+
+/* ============ STANDINGS ============ */
+function teamEliminated(code){ return provider.getTeam(code).stage !== 'champion'; }
+function playersRemaining(mgrIdx){ return squadOf(mgrIdx).filter(p=>!teamEliminated(provider.getPlayer(p.playerId).team)).length; }
+function standings(){
+  return MANAGERS.map((name,idx)=>{
+    let total=0; squadOf(idx).forEach(p=>{ total+=provider.totals(p.playerId).total; });
+    return { idx, name, total, count:squadOf(idx).length, remaining:playersRemaining(idx) };
+  }).sort((a,b)=>b.total-a.total);
+}
+
+/* ============ RENDER: shell + nav ============ */
+const NAV = [
+  {id:'draft', label:'Draft', icon:'ti-clipboard-list'},
+  {id:'standings', label:'Standings', icon:'ti-trophy'},
+  {id:'squads', label:'Squads', icon:'ti-users'},
+  {id:'players', label:'Players', icon:'ti-list-numbers'},
+  {id:'scoring', label:'Scoring', icon:'ti-calculator'},
+  {id:'undrafted', label:'Undrafted', icon:'ti-user-search'},
+  {id:'tools', label:'Tools', icon:'ti-settings'},
+];
+const BOTTOM = ['standings','squads','players','scoring','more'];
+function go(page){ ui.page=page; window.scrollTo(0,0); render(); }
+function renderNav(){
+  document.getElementById('topNav').innerHTML = NAV.map(n=>
+    `<button class="nav-btn ${ui.page===n.id?'active':''}" onclick="go('${n.id}')">${n.label}</button>`).join('');
+  const bmap={standings:'ti-trophy',squads:'ti-users',players:'ti-list-numbers',scoring:'ti-calculator',more:'ti-dots'};
+  const blab={standings:'Standings',squads:'Squads',players:'Players',scoring:'Scoring',more:'More'};
+  const activeMore = !['standings','squads','players','scoring'].includes(ui.page);
+  document.getElementById('bottomNav').innerHTML = BOTTOM.map(id=>{
+    const act = id==='more' ? activeMore : ui.page===id;
+    return `<button class="bn-item ${act?'active':''}" onclick="go('${id}')"><i class="ti ${bmap[id]}"></i><span>${blab[id]}</span></button>`;
+  }).join('');
+}
+function render(){ renderNav();
+  const v=document.getElementById('view');
+  const p=ui.page;
+  if(p==='draft') v.innerHTML=viewDraft();
+  else if(p==='standings') v.innerHTML=viewStandings();
+  else if(p==='squads') v.innerHTML=viewSquads();
+  else if(p==='players') v.innerHTML=viewPlayers();
+  else if(p==='scoring') v.innerHTML=viewScoring();
+  else if(p==='undrafted') v.innerHTML=viewUndrafted();
+  else if(p==='tools') v.innerHTML=viewTools();
+  else if(p==='more') v.innerHTML=viewMore();
+}
+
+/* ============ VIEW: DRAFT (desktop board + picker) ============ */
+function viewDraft(){
+  const info=currentPickInfo();
+  let status;
+  if(!info){
+    status=`<div class="status-bar"><div class="status-badges"><span class="status-badge green" style="background:var(--green)">Draft complete</span><span class="status-badge muted">${TOTAL_PICKS} picks</span></div><div class="muted" style="font-size:.85rem">Head to Standings to see results.</div></div>`;
+  } else {
+    const needElig = mustPickEligible(info.mgrIdx);
+    const have = eligibleCount(info.mgrIdx);
+    status=`<div class="status-bar">
+      <div class="status-badges">
+        <span class="status-badge">Round ${info.round} of ${PICKS_PER}</span>
+        <span class="status-badge blue">Pick ${info.pickInRound} of ${NUM_MGR}</span>
+        <span class="status-badge muted">#${info.overall+1} overall</span>
+      </div>
+      <div style="font-size:1.05rem; font-weight:800; margin-bottom:.2rem">${MANAGERS[info.mgrIdx]} is on the clock</div>
+      <div class="req-note ${needElig?'req-warn':'req-ok'}">
+        ${needElig
+          ? `<i class="ti ti-alert-triangle"></i> This pick must be a player from a team ranked 40th or lower (has ${have} of ${REQUIRE_ELIGIBLE}).`
+          : `Requirement: ${have} of ${REQUIRE_ELIGIBLE} players from teams ranked 40th or lower.`}
+      </div></div>`;
+  }
+  return status + draftBoard() + picker();
+}
+function draftBoard(){
+  const info=currentPickInfo();
+  let cols='40px '+Array(NUM_MGR).fill('minmax(86px,1fr)').join(' ');
+  let html=`<div class="board-scroll"><div class="draft-grid" style="grid-template-columns:${cols}">`;
+  html+=`<div class="dg-head"></div>`;
+  for(let i=0;i<NUM_MGR;i++){ const cur=info&&info.mgrIdx===i; html+=`<div class="dg-head ${cur?'current':''}">${MANAGERS[i].replace('Manager ','')}</div>`; }
+  for(let r=0;r<PICKS_PER;r++){
+    html+=`<div class="dg-rl">${r+1}</div>`;
+    for(let c=0;c<NUM_MGR;c++){
+      const overall=r*NUM_MGR+(r%2===0?c:(NUM_MGR-1-c));
+      const pk=state.picks.find(p=>p.overall===overall);
+      const isCur=info&&info.overall===overall;
+      if(pk){ const pl=provider.getPlayer(pk.playerId); const el=provider.isEligible(pk.playerId);
+        html+=`<div class="dg-cell"><div class="dg-name">${pl.name}${el?'<span class="dg-elig"></span>':''}</div><div class="dg-team">${pl.team} · ${pl.pos}</div></div>`;
+      } else { html+=`<div class="dg-cell ${isCur?'current-slot':''}">${isCur?'<div class="dg-team" style="color:var(--orange);font-weight:700">on the clock</div>':''}</div>`; }
+    }
+  }
+  html+='</div></div>';
+  return html;
+}
+function pickerRows(){
+  const info=currentPickInfo();
+  const taken=draftedIds();
+  let list=PLAYERS.filter(p=>!taken.has(p.id));
+  if(ui.filter==='elig') list=list.filter(p=>provider.isEligible(p.id));
+  else if(['GK','DEF','MID','FWD'].includes(ui.filter)) list=list.filter(p=>p.pos===ui.filter);
+  if(ui.search){ const q=normName(ui.search); list=list.filter(p=>normName(p.name).includes(q)||p.team.toLowerCase().includes(ui.search.toLowerCase())); }
+  list.sort((a,b)=>provider.totals(b.id).total-provider.totals(a.id).total);
+  const rows=list.slice(0,120).map(p=>{
+    const el=provider.isEligible(p.id); const t=provider.getTeam(p.team);
+    const blocked=info&&!canDraft(info.mgrIdx,p.id);
+    return `<div class="pl-row ${el?'elig':''}">
+      <span class="pos-chip">${p.pos}</span>
+      <span class="pl-name">${p.name} <span class="muted" style="font-weight:400">· ${t.name}</span></span>
+      <span class="pill ${el?'elig':''}">#${t.rank}</span>
+      <button class="pl-draft" ${blocked?'style="opacity:.4" title="requirement"':''} onclick="makePick('${p.id}')">Draft</button>
+    </div>`;
+  }).join('');
+  return { rows, count:list.length };
+}
+function picker(){
+  if(isDraftComplete()) return '';
+  const {rows,count}=pickerRows();
+  const chips=[['all','All'],['elig','Ranked 40th+'],['GK','GK'],['DEF','DEF'],['MID','MID'],['FWD','FWD']];
+  return `<div class="picker"><h2 class="page-title" id="pickCount" style="font-size:1rem">Available players (${count})</h2>
+    <div class="picker-controls">
+      <input type="text" id="pickSearch" placeholder="Search player or team…" value="${ui.search}" oninput="ui.search=this.value; rerenderPicker()">
+    </div>
+    <div class="picker-controls">${chips.map(c=>`<button class="filter-chip ${c[0]==='elig'?'elig':''} ${ui.filter===c[0]?'active':''}" onclick="ui.filter='${c[0]}'; render()">${c[1]}</button>`).join('')}</div>
+    <div class="player-list" id="plist">${rows}</div></div>`;
+}
+function rerenderPicker(){
+  const plist=document.getElementById('plist'); if(!plist) return;
+  const {rows,count}=pickerRows();
+  plist.innerHTML=rows;
+  const c=document.getElementById('pickCount'); if(c) c.textContent='Available players ('+count+')';
+}
+
+/* ============ VIEW: STANDINGS ============ */
+function viewStandings(){
+  if(!state.started) return emptyState('ti-trophy','Run the draft or the 2022 simulation to see standings.');
+  const st=standings(); const max=Math.max(1,...st.map(s=>s.total));
+  const rows=st.map((s,i)=>{
+    const color = i===0?'var(--orange)':i===1?'var(--blue)':i===2?'var(--green)':'rgba(136,150,179,.5)';
+    return `<div class="stand-row">
+      <span class="stand-rank">${i+1}</span>
+      <span class="stand-name">${s.name}</span>
+      <span class="stand-remain ${s.remaining?'':'none'}"><span class="dot"></span>${s.remaining} in</span>
+      <span class="stand-pts">${s.total}</span>
+      <span class="stand-track"><span class="fill" style="width:${Math.max(2,s.total/max*100)}%; background:${color}"></span></span>
+    </div>`;
+  }).join('');
+  return `<h2 class="page-title">Standings</h2>
+    <div class="stand-legend"><span><b style="color:var(--green)">in</b> = players whose nation is still alive</span></div>
+    <div class="card" style="padding:.3rem .8rem">${rows}</div>
+    <div class="banner" style="margin-top:1rem"><i class="ti ti-info-circle"></i><div>Score is the sum of each manager's ten players. The thin bar shows the gap to the leader. "In" counts players whose nation is still in the tournament; in this finished 2022 sim only the champion's nation remains, so it mostly reads 0 and updates each round during a live tournament.</div></div>`;
+}
+
+/* ============ VIEW: SQUADS (mobile accordion) ============ */
+function viewSquads(){
+  if(!state.started) return emptyState('ti-users','No squads yet. Draft or run the simulation first.');
+  const m=ui.squadMgr;
+  const tabs=MANAGERS.map((n,i)=>`<button class="squad-tab ${i===m?'active':''}" onclick="ui.squadMgr=${i};ui.expanded={};render()">${n.replace('Manager ','')}</button>`).join('');
+  const sq=squadOf(m).map(pk=>({pk,pl:provider.getPlayer(pk.playerId)}))
+    .sort((a,b)=>provider.totals(b.pk.playerId).total-provider.totals(a.pk.playerId).total);
+  const total=sq.reduce((s,x)=>s+provider.totals(x.pk.playerId).total,0);
+  const elig=eligibleCount(m);
+  const cards=sq.map(({pk,pl})=>playerCard(pl,pk)).join('');
+  return `<h2 class="page-title">Squads</h2>
+    <div class="squad-tabs">${tabs}</div>
+    <div class="squad-head">
+      <div><div style="font-weight:800;font-size:1.05rem">${MANAGERS[m]}</div>
+        <div class="squad-total">${sq.length} players · ${elig}/${REQUIRE_ELIGIBLE} ranked 40th+ · <b>${total} pts</b></div></div>
+      <button class="expand-toggle" onclick="toggleAll(${m})">${allOpen(m)?'Collapse all':'Expand all'}</button>
+    </div>
+    ${cards||emptyState('ti-user','No players drafted for this manager yet.')}`;
+}
+function allOpen(m){ const sq=squadOf(m); return sq.length>0 && sq.every(pk=>ui.expanded[pk.playerId]); }
+function toggleAll(m){ const sq=squadOf(m); const open=allOpen(m); sq.forEach(pk=>ui.expanded[pk.playerId]=!open); render(); }
+function togglePlayer(id){ ui.expanded[id]=!ui.expanded[id]; render(); }
+function playerCard(pl,pk){
+  const tot=provider.totals(pl.id); const t=provider.getTeam(pl.team);
+  const el=provider.isEligible(pl.id); const open=!!ui.expanded[pl.id];
+  const stageTag=stageLabel(t.stage);
+  // round bar
+  const roundColors={group:'var(--orange)',r32:'var(--blue)',r16:'var(--blue)',qf:'var(--green)',sf:'var(--purple)',final:'var(--pink)'};
+  const bar=ROUNDS.map(r=>{ const v=tot.byRound[r]; return v>0?`<span style="width:${v/Math.max(1,tot.total)*100}%;background:${roundColors[r]}"></span>`:''; }).join('');
+  // ledger
+  const ledger=pl.matches.map(line=>{
+    const {pts,parts}=matchPoints(pl,line);
+    const chips=parts.map(pt=>{ let cls='chip'; if(pt.label.startsWith('Goal'))cls+=' goal'; else if(pt.label.startsWith('Assist'))cls+=' assist'; else if(pt.label.startsWith('Clean'))cls+=' cs'; else if(pt.sign<0)cls+=' neg'; return `<span class="${cls}">${pt.label}</span>`; }).join('');
+    const knock=line.r!=='group';
+    return `<div class="ledger-row"><span class="ledger-rnd ${knock?'knock':''}">${ROUND_LABEL[line.r]}</span><div class="chips">${chips}</div><span class="ledger-pts">${pts}</span></div>`;
+  }).join('');
+  return `<div class="pcard ${open?'open':''}">
+    <div class="pcard-head" onclick="togglePlayer('${pl.id}')">
+      <span class="pos-chip">${pl.pos}</span>
+      <span class="pcard-name">${pl.name} <span class="muted" style="font-weight:400">· ${t.name}</span></span>
+      ${el?'<span class="pill elig">#'+t.rank+'</span>':'<span class="pill">#'+t.rank+'</span>'}
+      <span class="pcard-total ${open?'':'dim'}">${tot.total}</span>
+      <i class="ti ti-chevron-down chev"></i>
+    </div>
+    <div class="pcard-body">
+      <div class="muted" style="font-size:.72rem;margin-bottom:.5rem">Reached: ${stageTag}</div>
+      <div class="round-bar">${bar}</div>
+      ${ledger}
+    </div></div>`;
+}
+function stageLabel(s){ return {group:'Group stage',r16:'Round of 16',qf:'Quarter-final',sf:'Semi-final',final:'Final',champion:'Champion'}[s]||s; }
+
+/* ============ VIEW: PLAYERS (leaderboard) ============ */
+function viewPlayers(){
+  if(!state.started) return emptyState('ti-list-numbers','Draft or simulate to see the player leaderboard.');
+  const owner={}; state.picks.forEach(pk=>owner[pk.playerId]=pk.mgrIdx);
+  const rows=state.picks.map(pk=>{ const pl=provider.getPlayer(pk.playerId); const tot=provider.totals(pk.playerId);
+    return {pl,tot,mgr:pk.mgrIdx}; }).sort((a,b)=>b.tot.total-a.tot.total);
+  const body=rows.map((r,i)=>`<tr>
+    <td style="color:var(--muted)">${i+1}</td>
+    <td><b>${r.pl.name}</b><div class="muted" style="font-size:.72rem">${provider.getTeam(r.pl.team).name}</div></td>
+    <td><span class="pos-chip">${r.pl.pos}</span></td>
+    <td>${MANAGERS[r.mgr].replace('Manager ','Mgr ')}</td>
+    <td style="text-align:right;font-weight:800;color:var(--orange)">${r.tot.total}</td></tr>`).join('');
+  return `<h2 class="page-title">Player leaderboard</h2><div class="card scroll-x"><table class="tbl">
+    <thead><tr><th>#</th><th>Player</th><th>Pos</th><th>Manager</th><th style="text-align:right">Pts</th></tr></thead>
+    <tbody>${body}</tbody></table></div>`;
+}
+
+/* ============ VIEW: SCORING RUBRIC (from SCORING config) ============ */
+function viewScoring(){
+  const s=SCORING;
+  const row=(label,val,neg)=>`<div class="rubric-row"><div class="rubric-label">${label}</div><div class="rubric-val ${neg?'neg':'pos'}">${val>0?'+':''}${val}</div></div>`;
+  return `<h2 class="page-title">Scoring</h2>
+  <div class="banner"><i class="ti ti-info-circle"></i><div>This is the exact rubric the engine uses. Every chip on a player's card is one of these lines. Goals are weighted by position.</div></div>
+  <div class="card">
+    <div class="section-h">Goals</div>
+    <div class="rubric-grid">
+      ${row('Goal — goalkeeper',s.goal.GK)}${row('Goal — defender',s.goal.DEF)}${row('Goal — midfielder',s.goal.MID)}${row('Goal — forward',s.goal.FWD)}
+    </div>
+    <div class="section-h">Creation & minutes</div>
+    <div class="rubric-grid">
+      ${row('Assist',s.assist)}${row('Played 60+ minutes',s.played60)}${row('Played 1–59 minutes',s.appearance)}
+    </div>
+    <div class="section-h">Clean sheets (60+ min, team concedes 0)</div>
+    <div class="rubric-grid">
+      ${row('Goalkeeper / defender',s.cleanSheet.GK)}${row('Midfielder',s.cleanSheet.MID)}
+    </div>
+    <div class="section-h">Deductions</div>
+    <div class="rubric-grid">
+      ${row('Yellow card',s.yellow,true)}${row('Red card',s.red,true)}${row('Own goal',s.ownGoal,true)}${row('Penalty missed',s.penMiss,true)}
+    </div>
+  </div>
+  <div class="card" style="margin-top:1rem">
+    <div class="section-h" style="margin-top:0">Roster requirement</div>
+    <div class="muted" style="font-size:.86rem">Each manager must draft at least <b style="color:var(--text)">${REQUIRE_ELIGIBLE} players from teams ranked 40th or lower</b> in the FIFA rankings. Goalkeeper saves are not scored. Points stop accruing once a player's nation is knocked out.</div>
+  </div>`;
+}
+
+/* ============ VIEW: UNDRAFTED ============ */
+function viewUndrafted(){
+  const taken=draftedIds();
+  const list=PLAYERS.filter(p=>!taken.has(p.id)).sort((a,b)=>provider.totals(b.id).total-provider.totals(a.id).total);
+  const body=list.map(p=>`<tr><td><b>${p.name}</b><div class="muted" style="font-size:.72rem">${provider.getTeam(p.team).name}</div></td>
+    <td><span class="pos-chip">${p.pos}</span></td><td><span class="pill ${provider.isEligible(p.id)?'elig':''}">#${provider.getTeam(p.team).rank}</span></td>
+    <td style="text-align:right;font-weight:700">${provider.totals(p.id).total}</td></tr>`).join('');
+  return `<h2 class="page-title">Undrafted (${list.length})</h2>
+    <div class="card scroll-x"><table class="tbl"><thead><tr><th>Player</th><th>Pos</th><th>Rank</th><th style="text-align:right">Pts</th></tr></thead><tbody>${body}</tbody></table></div>`;
+}
+
+/* ============ VIEW: TOOLS ============ */
+function viewTools(){
+  return `<h2 class="page-title">Tools</h2>
+    <div class="card">
+      <div class="section-h" style="margin-top:0">2022 test simulation</div>
+      <p class="muted" style="font-size:.85rem;margin-bottom:.8rem">Auto-drafts a full, requirement-valid 10×10 draft from the curated 2022 pool, then scores it from real goals and assists so you can sanity-check totals and standings.</p>
+      <div class="toolbar"><button class="btn btn-primary" onclick="runSimulation()">Run 2022 simulation</button>
+        <button class="btn btn-ghost" onclick="clearDraft()">Clear draft</button></div>
+      <div class="section-h">Draft edits</div>
+      <div class="toolbar"><button class="btn btn-ghost" onclick="undoLast()">Undo last pick</button>
+        <button class="btn btn-ghost" onclick="promptEdit()">Edit a pick…</button></div>
+      <div class="section-h">Save / load (local test persistence)</div>
+      <div class="toolbar"><button class="btn btn-ghost" onclick="exportState()">Export JSON</button>
+        <label class="btn btn-ghost" style="display:inline-block">Import JSON<input type="file" accept="application/json" style="display:none" onchange="importState(event)"></label></div>
+    </div>
+    <div class="banner" style="margin-top:1rem"><i class="ti ti-bulb"></i><div>In the live build this data layer is swapped for the official 2026 squads and a stats feed; the scoring engine and these screens stay the same. Multiplayer drafting (each manager on their own device) is added with a shared backend.</div></div>`;
+}
+function promptEdit(){ const n=prompt('Edit which overall pick number? (1–'+state.picks.length+')'); const o=parseInt(n,10)-1; if(!isNaN(o)) editPick(o); }
+function exportState(){ const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='silver-madness-2-draft.json'; a.click(); }
+function importState(e){ const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=()=>{ try{ state=JSON.parse(r.result); saveState(); render(); }catch(err){ alert('Could not read that file.'); } }; r.readAsText(f); }
+
+/* ============ VIEW: MORE (mobile) ============ */
+function viewMore(){
+  const items=[['draft','Draft board','ti-clipboard-list'],['undrafted','Undrafted players','ti-user-search'],['tools','Tools & simulation','ti-settings']];
+  return `<h2 class="page-title">More</h2><div class="card" style="padding:.4rem">
+    ${items.map(it=>`<button class="btn btn-ghost" style="width:100%;text-align:left;margin:.25rem 0;display:flex;align-items:center;gap:.6rem" onclick="go('${it[0]}')"><i class="ti ${it[2]}" style="font-size:1.2rem"></i>${it[1]}</button>`).join('')}
+  </div>`;
+}
+
+function emptyState(icon,msg){ return `<div class="empty-state"><i class="ti ${icon}"></i><p>${msg}</p></div>`; }
+
+/* ============ PASSWORD / BOOT ============ */
+function checkPw(){ const v=document.getElementById('pwInput').value.trim(); if(v===PASSWORD){ document.getElementById('pwScreen').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); loadState(); ui.page=isDraftComplete()||state.started?'standings':'draft'; render(); } else { document.getElementById('pwErr').textContent='Incorrect password'; } }
+document.getElementById('pwInput').addEventListener('keydown',e=>{ if(e.key==='Enter') checkPw(); });
+</script></body></html>
